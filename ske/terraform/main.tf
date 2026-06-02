@@ -1,4 +1,17 @@
 ################################################################################
+# Validation
+################################################################################
+
+resource "terraform_data" "validate_sna_requires_bastion" {
+  lifecycle {
+    precondition {
+      condition     = var.kubernetes_api_public_access || var.create_bastion
+      error_message = "create_bastion must be true when kubernetes_api_public_access is false (SNA) — the bastion is the only way to reach the control plane from outside the network area."
+    }
+  }
+}
+
+################################################################################
 # Project (organization-scoped container for the cluster)
 ################################################################################
 
@@ -55,11 +68,14 @@ module "bastion" {
   project_id   = stackit_resourcemanager_project.cluster.project_id
   network_id   = module.network.network_id
 
-  bastion_ssh_public_key   = var.bastion_ssh_public_key
-  bastion_image_id         = var.bastion_image_id != "" ? var.bastion_image_id : split(",", data.stackit_image_v2.bastion[0].id)[2]
-  bastion_ssh_source_cidr  = var.bastion_ssh_source_cidr
-  bastion_icmp_source_cidr = var.bastion_icmp_source_cidr
-  common_labels            = var.common_labels
+  bastion_ssh_public_keys   = var.bastion_ssh_public_keys
+  bastion_image_id          = var.bastion_image_id
+  bastion_ssh_source_cidrs  = var.bastion_ssh_source_cidrs
+  bastion_icmp_source_cidrs = var.bastion_icmp_source_cidrs
+  public_ip_enabled         = var.bastion_public_ip_enabled
+  bastion_egress_cidrs      = var.bastion_egress_cidrs
+  tags                      = var.bastion_tags
+  common_labels             = var.common_labels
 }
 
 ################################################################################
@@ -67,6 +83,10 @@ module "bastion" {
 ################################################################################
 
 locals {
+  # Bastion public IP — used to auto-add the bastion to kubernetes_api_authorized_networks.
+  # one() safely returns null when create_bastion = false (count = 0) or public_ip_enabled = false.
+  bastion_public_ip = one(module.bastion[*].bastion_public_ip)
+
   # Sized for Solace Cloud broker workloads. See README for the per-tier rationale.
   default_machine_type    = "c2i.2"
   monitoring_machine_type = "g3i.2"
@@ -214,7 +234,7 @@ module "cluster" {
   kubernetes_api_public_access = var.kubernetes_api_public_access
   kubernetes_api_authorized_networks = concat(
     var.kubernetes_api_authorized_networks,
-    var.create_bastion ? ["${module.bastion[0].bastion_public_ip}/32"] : [],
+    local.bastion_public_ip != null ? ["${local.bastion_public_ip}/32"] : [],
   )
 
   dns_enabled               = var.dns_enabled

@@ -34,13 +34,18 @@ output "egress_address_ranges" {
 }
 
 output "kubernetes_api_public_access" {
-  value       = var.kubernetes_api_public_access
-  description = "Whether the cluster's Kubernetes API is publicly accessible."
+  value       = var.kubernetes_api_public_access && !var.create_bastion && length(var.kubernetes_api_authorized_networks) == 0
+  description = "Whether the Kubernetes API is directly reachable from the internet without tunneling. False when SNA is enabled, or when the ACL restricts access to the bastion — both require connect.sh to open the SOCKS tunnel."
 }
 
 output "bastion_public_ip" {
   value       = one(module.bastion[*].bastion_public_ip)
-  description = "Public IP of the bastion host (null when create_bastion is false)."
+  description = "Public IP of the bastion host (null when create_bastion is false, or when bastion_public_ip_enabled is false)."
+}
+
+output "bastion_private_ip" {
+  value       = one(module.bastion[*].bastion_private_ip)
+  description = "Private IP of the bastion host on the cluster network (null when create_bastion is false)."
 }
 
 output "bastion_username" {

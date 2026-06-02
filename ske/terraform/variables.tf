@@ -146,29 +146,47 @@ variable "node_pool_volume_type" {
 variable "create_bastion" {
   type        = bool
   default     = false
-  description = "Whether to create a bastion host with a public IP."
+  description = "Whether to create a bastion host. Required to be true when kubernetes_api_access_scope is SNA."
 }
 
-variable "bastion_ssh_public_key" {
-  type        = string
-  default     = ""
-  description = "SSH public key string installed on the bastion. Required when create_bastion is true."
+variable "bastion_ssh_public_keys" {
+  type        = list(string)
+  default     = []
+  description = "SSH public keys for the operators authorized to log in to the bastion. Each key is installed into the default user's authorized_keys via cloud-init. Must be non-empty when create_bastion is true."
 }
 
 variable "bastion_image_id" {
   type        = string
-  default     = ""
-  description = "STACKIT image UUID for the bastion VM. Optional: when empty, the latest Ubuntu image in the project is auto-detected via the stackit_image_v2 data source. Set this to pin a specific image UUID."
+  default     = null
+  description = "STACKIT image UUID for the bastion VM. When null (default), the bastion module auto-resolves the latest Ubuntu 24.04 image. Override only when you need a specific or hardened image."
 }
 
-variable "bastion_ssh_source_cidr" {
-  type        = string
-  default     = ""
-  description = "Source CIDR allowed to SSH to the bastion (port 22). Must be non-empty when create_bastion is true."
+variable "bastion_ssh_source_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty when create_bastion is true."
 }
 
-variable "bastion_icmp_source_cidr" {
-  type        = string
-  default     = ""
-  description = "Source CIDR allowed to send ICMP echo (ping) to the bastion. Leave empty to omit the ICMP ingress rule entirely."
+variable "bastion_icmp_source_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "Source CIDRs allowed to send ICMP echo (ping) to the bastion. One ingress rule is created per CIDR. Leave empty to omit ICMP entirely."
+}
+
+variable "bastion_public_ip_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to attach a public IP to the bastion. Set false when the bastion is reached via SNA-internal routing only. Note: connect.sh currently tunnels via the public IP, so leave true unless you have an SNA-internal access path."
+}
+
+variable "bastion_egress_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Empty (default) leaves STACKIT's default egress posture untouched."
+}
+
+variable "bastion_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Labels merged into the module-default labels and applied to every taggable bastion resource. STACKIT label keys do not allow ':' — use a separator like '_' (e.g. solace_env)."
 }
