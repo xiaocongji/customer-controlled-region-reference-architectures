@@ -157,8 +157,8 @@ variable "bastion_ssh_public_keys" {
 
 variable "bastion_image_id" {
   type        = string
-  default     = null
-  description = "STACKIT image UUID for the bastion VM. When null (default), the bastion module auto-resolves the latest Ubuntu 24.04 image. Override only when you need a specific or hardened image."
+  default     = "b74faf8a-41d4-4e02-b0b0-b6205ac44e8a"
+  description = "STACKIT image UUID for the bastion VM. Default is Ubuntu 24.04 LTS (eu01). To find a newer image: stackit image list --project-id <any-project> | grep -i ubuntu"
 }
 
 variable "bastion_ssh_source_cidrs" {

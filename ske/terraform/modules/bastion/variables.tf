@@ -25,8 +25,7 @@ variable "bastion_ssh_public_keys" {
 
 variable "bastion_image_id" {
   type        = string
-  default     = null
-  description = "STACKIT image UUID for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 24.04 image from the STACKIT catalog. Override only when you need a specific or hardened image."
+  description = "STACKIT image UUID for the bastion VM. Resolved by the calling template — either from the caller-supplied override or from the stackit_image_v2 data source."
 }
 
 variable "machine_type" {

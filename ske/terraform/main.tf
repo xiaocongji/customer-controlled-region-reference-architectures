@@ -49,17 +49,6 @@ module "network" {
 # Bastion
 ################################################################################
 
-data "stackit_image_v2" "bastion" {
-  count      = var.create_bastion && var.bastion_image_id == "" ? 1 : 0
-  project_id = stackit_resourcemanager_project.cluster.project_id
-
-  filter = {
-    distro = "ubuntu"
-  }
-
-  depends_on = [stackit_resourcemanager_project.cluster]
-}
-
 module "bastion" {
   source = "./modules/bastion"
   count  = var.create_bastion ? 1 : 0

@@ -1,17 +1,4 @@
-data "stackit_image_v2" "ubuntu_latest" {
-  count = var.bastion_image_id == null ? 1 : 0
-
-  project_id     = var.project_id
-  sort_ascending = false
-  filter = {
-    distro  = "ubuntu"
-    version = "24.04"
-  }
-}
-
 locals {
-  resolved_image_id = var.bastion_image_id != null ? var.bastion_image_id : data.stackit_image_v2.ubuntu_latest[0].image_id
-
   # STACKIT label keys cannot contain ':'. Module-default labels use '_'; caller tags
   # are merged on top and win on key collisions. common_labels wins last.
   default_labels = {
@@ -100,7 +87,7 @@ resource "stackit_server" "bastion" {
   boot_volume = {
     size        = var.boot_volume_size
     source_type = "image"
-    source_id   = local.resolved_image_id
+    source_id   = var.bastion_image_id
   }
 
   machine_type = var.machine_type
