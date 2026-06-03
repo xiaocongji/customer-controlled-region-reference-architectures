@@ -9,13 +9,7 @@ SSH key material is an **input** — the module never generates or stores secret
 
 ## How an operator uses it
 
-The bastion is a jump host; you do not run workloads on it. To reach a private cluster node:
-
-```sh
-ssh -J ubuntu@<bastion_public_ip> ubuntu@<node-internal-ip>
-```
-
-`connect.sh` at the repo root automates the equivalent for `kubectl`: when the cluster API is
+The bastion is a jump host; you do not run workloads on it. `connect.sh` at the repo root automates `kubectl` access: when the cluster API is
 private it opens a SOCKS tunnel through the bastion (`ssh ubuntu@<bastion_public_ip> -D ...`)
 and points the kubeconfig proxy at it. The `bastion_public_ip` and `bastion_username` outputs
 are the values that go into the team's operator runbook.

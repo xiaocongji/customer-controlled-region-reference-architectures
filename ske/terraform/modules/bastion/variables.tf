@@ -10,7 +10,7 @@ variable "project_id" {
 
 variable "network_id" {
   type        = string
-  description = "Project-scoped network ID for the bastion's NIC (the 'network_id' output of the network module). The network area (SNA) is an org-scoped concept handled entirely by the network module — the bastion does not interact with it directly and does not need network_area_id as an input."
+  description = "Project-scoped network ID for the bastion's NIC (the 'network_id' output of the network module)."
 }
 
 variable "bastion_ssh_public_keys" {
