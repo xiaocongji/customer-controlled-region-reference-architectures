@@ -13,14 +13,10 @@ variable "network_id" {
   description = "Project-scoped network ID for the bastion's NIC (the 'network_id' output of the network module)."
 }
 
-variable "bastion_ssh_public_keys" {
-  type        = list(string)
-  description = "SSH public keys for the operators authorized to log in. Each key is written to the default user's authorized_keys via cloud-init."
-
-  validation {
-    condition     = length(var.bastion_ssh_public_keys) > 0
-    error_message = "At least one SSH public key must be provided — the bastion has no other login method (password auth is disabled)."
-  }
+variable "user_data" {
+  type        = string
+  default     = null
+  description = "Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content (SSH key injection, hardening config, etc.)."
 }
 
 variable "bastion_image_id" {
@@ -59,13 +55,7 @@ variable "bastion_icmp_source_cidrs" {
 variable "bastion_egress_cidrs" {
   type        = list(string)
   default     = []
-  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which creates no egress rule and leaves STACKIT's default egress posture untouched (matching prior module behavior). For a hardened SNA posture, set the SNA/VNet ranges plus your StackIT package-mirror ranges."
-}
-
-variable "public_ip_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether to attach a public IP to the bastion. Set false when the bastion is reached via SNA-internal routing only."
+  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which leaves STACKIT's default egress posture untouched."
 }
 
 variable "tags" {

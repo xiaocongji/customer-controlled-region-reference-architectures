@@ -146,7 +146,7 @@ variable "node_pool_volume_type" {
 variable "create_bastion" {
   type        = bool
   default     = false
-  description = "Whether to create a bastion host. Required to be true when kubernetes_api_access_scope is SNA."
+  description = "Whether to create a bastion host. Required to be true when kubernetes_api_public_access is false (SNA mode)."
 }
 
 variable "bastion_ssh_public_keys" {
@@ -171,12 +171,6 @@ variable "bastion_icmp_source_cidrs" {
   type        = list(string)
   default     = []
   description = "Source CIDRs allowed to send ICMP echo (ping) to the bastion. One ingress rule is created per CIDR. Leave empty to omit ICMP entirely."
-}
-
-variable "bastion_public_ip_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether to attach a public IP to the bastion. Set false when the bastion is reached via SNA-internal routing only. Note: connect.sh currently tunnels via the public IP, so leave true unless you have an SNA-internal access path."
 }
 
 variable "bastion_egress_cidrs" {

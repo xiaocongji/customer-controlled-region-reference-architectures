@@ -5,23 +5,6 @@ locals {
     solace_module = "bastion"
   }
   labels = merge(local.default_labels, var.tags, var.common_labels)
-
-  # Cloud-init injects every operator key into the default (ubuntu) user's
-  # authorized_keys and disables password auth. This is the only way to authorize
-  # more than one key — stackit_server.keypair_name takes a single keypair. All of
-  # this is package-free, so it does not depend on egress to apt mirrors. fail2ban /
-  # auditd / unattended-upgrades are intentionally out of scope (see README).
-  user_data = "#cloud-config\n${yamlencode({
-    ssh_pwauth          = false
-    disable_root        = true
-    ssh_authorized_keys = var.bastion_ssh_public_keys
-    write_files = [{
-      path        = "/etc/ssh/sshd_config.d/99-hardening.conf"
-      content     = "PermitRootLogin no\nPasswordAuthentication no\n"
-      permissions = "0644"
-    }]
-    runcmd = ["systemctl restart ssh"]
-  })}"
 }
 
 resource "stackit_security_group" "bastion_sg" {
@@ -91,7 +74,7 @@ resource "stackit_server" "bastion" {
   }
 
   machine_type = var.machine_type
-  user_data    = local.user_data
+  user_data    = var.user_data
   labels       = local.labels
   network_interfaces = [
     stackit_network_interface.bastion_nic.network_interface_id
@@ -99,8 +82,6 @@ resource "stackit_server" "bastion" {
 }
 
 resource "stackit_public_ip" "bastion_public_ip" {
-  count = var.public_ip_enabled ? 1 : 0
-
   project_id           = var.project_id
   network_interface_id = stackit_network_interface.bastion_nic.network_interface_id
   labels               = local.labels

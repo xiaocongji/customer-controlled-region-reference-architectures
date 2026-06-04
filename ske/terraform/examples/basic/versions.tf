@@ -10,6 +10,6 @@ terraform {
 }
 
 provider "stackit" {
-  default_region        = var.region
+  default_region        = "eu01"
   enable_beta_resources = true
 }

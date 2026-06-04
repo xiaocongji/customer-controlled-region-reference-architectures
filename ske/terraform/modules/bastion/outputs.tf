@@ -4,8 +4,8 @@ output "bastion_instance_id" {
 }
 
 output "bastion_public_ip" {
-  value       = one(stackit_public_ip.bastion_public_ip[*].ip)
-  description = "The bastion host's public IP address. Null when public_ip_enabled is false (SNA-internal access only)."
+  value       = stackit_public_ip.bastion_public_ip.ip
+  description = "The bastion host's public IP address."
 }
 
 output "bastion_private_ip" {
