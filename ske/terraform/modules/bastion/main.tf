@@ -86,9 +86,10 @@ resource "stackit_server" "bastion" {
   project_id = var.project_id
   name       = "${var.cluster_name}-bastion"
   boot_volume = {
-    size        = var.boot_volume_size
-    source_type = "image"
-    source_id   = local.resolved_image_id
+    size                  = var.boot_volume_size
+    source_type           = "image"
+    source_id             = local.resolved_image_id
+    delete_on_termination = true
   }
 
   machine_type = var.machine_type

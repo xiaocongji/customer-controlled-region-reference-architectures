@@ -158,7 +158,7 @@ variable "bastion_ssh_public_key" {
 variable "bastion_image_id" {
   type        = string
   default     = null
-  description = "STACKIT image UUID for the bastion VM. Required when create_bastion is true and the project is being created in the same apply (project_id is unknown at plan time, so the module cannot auto-resolve the image). Find the UUID with: stackit image list --project-id <any-existing-project-id> | grep -i '22.04'"
+  description = "STACKIT image UUID for the bastion VM. Required when create_bastion is true. See the bastion module README for how to find a UUID."
 }
 
 variable "bastion_ssh_source_cidrs" {

@@ -1,3 +1,26 @@
+# bastion
+
+An SSH jump host into a STACKIT region. Provisions a single VM on the project network,
+attaches a public IP, and locks SSH ingress to an operator-supplied CIDR allow-list.
+
+SSH access is configured via STACKIT's native `stackit_key_pair` resource (pass a single
+public key via `bastion_ssh_public_key`). For additional hardening or multi-key setups,
+pass a cloud-init payload via `user_data` — the module forwards it to the VM as-is.
+
+## Finding a bastion image UUID
+
+`bastion_image_id` must be provided when deploying through the root template (the project
+is created in the same apply, so the image cannot be auto-resolved at plan time).
+
+List available Ubuntu images from any existing project in your organization:
+
+```bash
+stackit image list --project-id <any-existing-project-id> | grep -i "22.04"
+```
+
+The `Ubuntu 22.04` (x86\_64) row shows the UUID to use. Example for eu01:
+`3ad2867e-695b-4ee6-9502-b563013413d4`
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

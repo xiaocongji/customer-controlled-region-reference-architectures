@@ -10,7 +10,7 @@ variable "project_id" {
 
 variable "network_id" {
   type        = string
-  description = "Project-scoped network ID for the bastion's NIC (the 'network_id' output of the network module)."
+  description = "Project-scoped network ID for the bastion's NIC."
 }
 
 variable "bastion_ssh_public_key" {
@@ -28,13 +28,13 @@ variable "user_data" {
 variable "bastion_image_id" {
   type        = string
   default     = null
-  description = "STACKIT image UUID override for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image via stackit_image_v2."
+  description = "STACKIT image UUID for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image."
 }
 
 variable "machine_type" {
   type        = string
   default     = "g2i.1"
-  description = "STACKIT VM flavor for the bastion host. g2i.1 (1 vCPU, 4 GB) is the current equivalent of the deprecated g1.2 — use g2i.2 or larger for ops-heavy Schwarz-style deployments."
+  description = "STACKIT VM flavor for the bastion host."
 }
 
 variable "boot_volume_size" {
