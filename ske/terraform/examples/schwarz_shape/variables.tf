@@ -13,18 +13,12 @@ variable "cluster_name" {
   description = "Name prefix for bastion resources. Max 11 characters."
 }
 
-variable "ssh_public_keys" {
-  type        = list(string)
-  description = "SSH public keys for the operators authorized to log in."
+variable "ssh_public_key" {
+  type        = string
+  description = "SSH public key for the operator authorized to log in to the bastion."
 }
 
 variable "allowed_ssh_cidrs" {
   type        = list(string)
   description = "Source CIDRs allowed to SSH to the bastion. Scope to Solace office and VPN ranges."
-}
-
-variable "bastion_image_id" {
-  type        = string
-  default     = "b74faf8a-41d4-4e02-b0b0-b6205ac44e8a"
-  description = "STACKIT image UUID for the bastion VM. Default is Ubuntu 24.04 LTS (eu01)."
 }

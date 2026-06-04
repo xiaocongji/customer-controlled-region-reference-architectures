@@ -1,4 +1,15 @@
+data "stackit_image_v2" "ubuntu_lts" {
+  count      = var.bastion_image_id == null ? 1 : 0
+  project_id = var.project_id
+  name_regex = "^Ubuntu 22\\.04$"
+  filter = {
+    distro = "ubuntu"
+  }
+}
+
 locals {
+  resolved_image_id = var.bastion_image_id != null ? var.bastion_image_id : data.stackit_image_v2.ubuntu_lts[0].image_id
+
   # STACKIT label keys cannot contain ':'. Module-default labels use '_'; caller tags
   # are merged on top and win on key collisions. common_labels wins last.
   default_labels = {
@@ -64,16 +75,24 @@ resource "stackit_network_interface" "bastion_nic" {
   labels             = local.labels
 }
 
+resource "stackit_key_pair" "bastion" {
+  count = var.bastion_ssh_public_key != null ? 1 : 0
+
+  name       = "${var.cluster_name}-bastion"
+  public_key = var.bastion_ssh_public_key
+}
+
 resource "stackit_server" "bastion" {
   project_id = var.project_id
   name       = "${var.cluster_name}-bastion"
   boot_volume = {
     size        = var.boot_volume_size
     source_type = "image"
-    source_id   = var.bastion_image_id
+    source_id   = local.resolved_image_id
   }
 
   machine_type = var.machine_type
+  keypair_name = one(stackit_key_pair.bastion[*].name)
   user_data    = var.user_data
   labels       = local.labels
   network_interfaces = [

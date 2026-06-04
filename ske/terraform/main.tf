@@ -11,6 +11,24 @@ resource "terraform_data" "validate_sna_requires_bastion" {
   }
 }
 
+resource "terraform_data" "validate_bastion_cidrs" {
+  lifecycle {
+    precondition {
+      condition     = !var.create_bastion || length(var.bastion_ssh_source_cidrs) > 0
+      error_message = "bastion_ssh_source_cidrs must be non-empty when create_bastion is true — the bastion would be unreachable via SSH otherwise."
+    }
+  }
+}
+
+resource "terraform_data" "validate_bastion_image_id" {
+  lifecycle {
+    precondition {
+      condition     = !var.create_bastion || var.bastion_image_id != null
+      error_message = "bastion_image_id must be set when create_bastion is true. The module cannot auto-resolve the image UUID when the project is created in the same apply. Find the UUID with: stackit image list --project-id <any-existing-project-id>"
+    }
+  }
+}
+
 ################################################################################
 # Project (organization-scoped container for the cluster)
 ################################################################################
@@ -57,7 +75,7 @@ module "bastion" {
   project_id   = stackit_resourcemanager_project.cluster.project_id
   network_id   = module.network.network_id
 
-  user_data                 = local.bastion_user_data
+  bastion_ssh_public_key    = var.bastion_ssh_public_key
   bastion_image_id          = var.bastion_image_id
   bastion_ssh_source_cidrs  = var.bastion_ssh_source_cidrs
   bastion_icmp_source_cidrs = var.bastion_icmp_source_cidrs
@@ -74,20 +92,6 @@ locals {
   # Bastion public IP — used to auto-add the bastion to kubernetes_api_authorized_networks.
   # one() safely returns null when create_bastion = false (count = 0).
   bastion_public_ip = one(module.bastion[*].bastion_public_ip)
-
-  # Cloud-init for the bastion: installs operator SSH keys and enforces sshd hardening.
-  # Built here so the bastion module stays a thin infrastructure wrapper.
-  bastion_user_data = length(var.bastion_ssh_public_keys) > 0 ? "#cloud-config\n${yamlencode({
-    ssh_pwauth          = false
-    disable_root        = true
-    ssh_authorized_keys = var.bastion_ssh_public_keys
-    write_files = [{
-      path        = "/etc/ssh/sshd_config.d/99-hardening.conf"
-      content     = "PermitRootLogin no\nPasswordAuthentication no\n"
-      permissions = "0644"
-    }]
-    runcmd = ["systemctl restart ssh"]
-  })}" : null
 
   # Sized for Solace Cloud broker workloads. See README for the per-tier rationale.
   default_machine_type    = "c2i.2"

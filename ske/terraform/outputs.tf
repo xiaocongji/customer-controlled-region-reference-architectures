@@ -34,8 +34,8 @@ output "egress_address_ranges" {
 }
 
 output "kubernetes_api_public_access" {
-  value       = var.kubernetes_api_public_access && !var.create_bastion && length(var.kubernetes_api_authorized_networks) == 0
-  description = "Whether the Kubernetes API is directly reachable from the internet without tunneling. False when SNA is enabled, or when the ACL restricts access to the bastion — both require connect.sh to open the SOCKS tunnel."
+  value       = var.kubernetes_api_public_access && (!var.create_bastion || length(var.kubernetes_api_authorized_networks) > 0)
+  description = "Whether the Kubernetes API is directly reachable without tunneling through the bastion. False when SNA is enabled, or when only the bastion's IP is in the ACL — both require connect.sh to open the SOCKS tunnel. True when there is no ACL (fully open) or when the caller supplied their own authorized CIDRs alongside the bastion."
 }
 
 output "bastion_public_ip" {

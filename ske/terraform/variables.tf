@@ -149,16 +149,16 @@ variable "create_bastion" {
   description = "Whether to create a bastion host. Required to be true when kubernetes_api_public_access is false (SNA mode)."
 }
 
-variable "bastion_ssh_public_keys" {
-  type        = list(string)
-  default     = []
-  description = "SSH public keys for the operators authorized to log in to the bastion. Each key is installed into the default user's authorized_keys via cloud-init. Must be non-empty when create_bastion is true."
+variable "bastion_ssh_public_key" {
+  type        = string
+  default     = null
+  description = "SSH public key installed on the bastion host. When set, a stackit_key_pair resource is created and attached to the VM. When null, no key pair is created — provide access via user_data instead."
 }
 
 variable "bastion_image_id" {
   type        = string
-  default     = "b74faf8a-41d4-4e02-b0b0-b6205ac44e8a"
-  description = "STACKIT image UUID for the bastion VM. Default is Ubuntu 24.04 LTS (eu01). To find a newer image: stackit image list --project-id <any-project> | grep -i ubuntu"
+  default     = null
+  description = "STACKIT image UUID for the bastion VM. Required when create_bastion is true and the project is being created in the same apply (project_id is unknown at plan time, so the module cannot auto-resolve the image). Find the UUID with: stackit image list --project-id <any-existing-project-id> | grep -i '22.04'"
 }
 
 variable "bastion_ssh_source_cidrs" {

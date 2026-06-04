@@ -13,15 +13,22 @@ variable "network_id" {
   description = "Project-scoped network ID for the bastion's NIC (the 'network_id' output of the network module)."
 }
 
+variable "bastion_ssh_public_key" {
+  type        = string
+  default     = null
+  description = "SSH public key installed on the bastion via a stackit_key_pair resource. When null, no key pair is created and access relies on user_data alone."
+}
+
 variable "user_data" {
   type        = string
   default     = null
-  description = "Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content (SSH key injection, hardening config, etc.)."
+  description = "Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content."
 }
 
 variable "bastion_image_id" {
   type        = string
-  description = "STACKIT image UUID for the bastion VM. Resolved by the calling template — either from the caller-supplied override or from the stackit_image_v2 data source."
+  default     = null
+  description = "STACKIT image UUID override for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image via stackit_image_v2."
 }
 
 variable "machine_type" {
