@@ -163,7 +163,7 @@ variable "bastion_image_id" {
 
 variable "bastion_ssh_source_cidrs" {
   type        = list(string)
-  default     = []
+  default     = ["0.0.0.0/0"]
   description = "Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty when create_bastion is true."
 }
 
@@ -176,7 +176,7 @@ variable "bastion_icmp_source_cidrs" {
 variable "bastion_egress_cidrs" {
   type        = list(string)
   default     = []
-  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Empty (default) leaves STACKIT's default egress posture untouched."
+  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which allows egress to any destination."
 }
 
 variable "bastion_tags" {

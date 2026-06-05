@@ -50,17 +50,16 @@ No modules.
 | [stackit_security_group_rule.icmp](https://registry.terraform.io/providers/stackitcloud/stackit/latest/docs/resources/security_group_rule) | resource |
 | [stackit_security_group_rule.ssh](https://registry.terraform.io/providers/stackitcloud/stackit/latest/docs/resources/security_group_rule) | resource |
 | [stackit_server.bastion](https://registry.terraform.io/providers/stackitcloud/stackit/latest/docs/resources/server) | resource |
-| [stackit_image_v2.ubuntu_lts](https://registry.terraform.io/providers/stackitcloud/stackit/latest/docs/data-sources/image_v2) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_bastion_egress_cidrs"></a> [bastion\_egress\_cidrs](#input\_bastion\_egress\_cidrs) | Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which leaves STACKIT's default egress posture untouched. | `list(string)` | `[]` | no |
+| <a name="input_bastion_egress_cidrs"></a> [bastion\_egress\_cidrs](#input\_bastion\_egress\_cidrs) | Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which allows egress to any destination. | `list(string)` | `[]` | no |
 | <a name="input_bastion_icmp_source_cidrs"></a> [bastion\_icmp\_source\_cidrs](#input\_bastion\_icmp\_source\_cidrs) | Source CIDRs allowed to send ICMP echo (ping) to the bastion. One ingress rule is created per CIDR. Leave empty to omit ICMP entirely. | `list(string)` | `[]` | no |
-| <a name="input_bastion_image_id"></a> [bastion\_image\_id](#input\_bastion\_image\_id) | STACKIT image UUID for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image. | `string` | `null` | no |
+| <a name="input_bastion_image_id"></a> [bastion\_image\_id](#input\_bastion\_image\_id) | STACKIT image UUID for the bastion VM. | `string` | n/a | yes |
 | <a name="input_bastion_ssh_public_key"></a> [bastion\_ssh\_public\_key](#input\_bastion\_ssh\_public\_key) | SSH public key installed on the bastion via a stackit\_key\_pair resource. When null, no key pair is created and access relies on user\_data alone. | `string` | `null` | no |
-| <a name="input_bastion_ssh_source_cidrs"></a> [bastion\_ssh\_source\_cidrs](#input\_bastion\_ssh\_source\_cidrs) | Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty. | `list(string)` | n/a | yes |
+| <a name="input_bastion_ssh_source_cidrs"></a> [bastion\_ssh\_source\_cidrs](#input\_bastion\_ssh\_source\_cidrs) | Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty. | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
 | <a name="input_boot_volume_size"></a> [boot\_volume\_size](#input\_boot\_volume\_size) | Boot volume size in GiB for the bastion host. | `number` | `20` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Cluster name. Used as a prefix for bastion resource names (e.g. cluster\_name + '-bastion', cluster\_name + '-bastion-sg'). | `string` | n/a | yes |
 | <a name="input_common_labels"></a> [common\_labels](#input\_common\_labels) | Map of resource labels to apply to all resources that support labelling. | `map(string)` | `{}` | no |
@@ -68,7 +67,7 @@ No modules.
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | Project-scoped network ID for the bastion's NIC. | `string` | n/a | yes |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | STACKIT project ID where the bastion is created. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Labels merged into the module-default labels and applied to every taggable bastion resource. STACKIT label keys do not allow ':' — use a separator like '\_' (e.g. solace\_env). | `map(string)` | `{}` | no |
-| <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content. | `string` | `null` | no |
+| <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Cloud-init user data passed to the bastion VM. | `string` | `null` | no |
 
 ## Outputs
 
@@ -79,5 +78,4 @@ No modules.
 | <a name="output_bastion_public_ip"></a> [bastion\_public\_ip](#output\_bastion\_public\_ip) | The bastion host's public IP address. |
 | <a name="output_bastion_security_group_id"></a> [bastion\_security\_group\_id](#output\_bastion\_security\_group\_id) | ID of the bastion's security group. |
 | <a name="output_bastion_username"></a> [bastion\_username](#output\_bastion\_username) | The bastion host's SSH username. |
-| <a name="output_ssh_user"></a> [ssh\_user](#output\_ssh\_user) | Alias of bastion\_username, matching the sibling-module output contract. |
 <!-- END_TF_DOCS -->

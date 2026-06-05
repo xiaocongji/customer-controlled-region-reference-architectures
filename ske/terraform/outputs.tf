@@ -33,11 +33,6 @@ output "egress_address_ranges" {
   description = "Outgoing network ranges (CIDR) of traffic originating from cluster workloads."
 }
 
-output "kubernetes_api_public_access" {
-  value       = var.kubernetes_api_public_access && (!var.create_bastion || length(var.kubernetes_api_authorized_networks) > 0)
-  description = "Whether the Kubernetes API is directly reachable without tunneling through the bastion. False when SNA is enabled, or when only the bastion's IP is in the ACL — both require connect.sh to open the SOCKS tunnel. True when there is no ACL (fully open) or when the caller supplied their own authorized CIDRs alongside the bastion."
-}
-
 output "bastion_public_ip" {
   value       = one(module.bastion[*].bastion_public_ip)
   description = "Public IP of the bastion host (null when create_bastion is false)."

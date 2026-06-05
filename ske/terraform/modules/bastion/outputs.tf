@@ -22,8 +22,3 @@ output "bastion_username" {
   value       = "ubuntu"
   description = "The bastion host's SSH username."
 }
-
-output "ssh_user" {
-  value       = "ubuntu"
-  description = "Alias of bastion_username, matching the sibling-module output contract."
-}

@@ -22,13 +22,12 @@ variable "bastion_ssh_public_key" {
 variable "user_data" {
   type        = string
   default     = null
-  description = "Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content."
+  description = "Cloud-init user data passed to the bastion VM."
 }
 
 variable "bastion_image_id" {
   type        = string
-  default     = null
-  description = "STACKIT image UUID for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image."
+  description = "STACKIT image UUID for the bastion VM."
 }
 
 variable "machine_type" {
@@ -45,11 +44,12 @@ variable "boot_volume_size" {
 
 variable "bastion_ssh_source_cidrs" {
   type        = list(string)
+  default     = ["0.0.0.0/0"]
   description = "Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty."
 
   validation {
     condition     = length(var.bastion_ssh_source_cidrs) > 0
-    error_message = "At least one SSH source CIDR must be provided — an empty list would create a bastion that nobody can reach."
+    error_message = "At least one SSH source CIDR must be provided."
   }
 }
 
@@ -62,7 +62,7 @@ variable "bastion_icmp_source_cidrs" {
 variable "bastion_egress_cidrs" {
   type        = list(string)
   default     = []
-  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which leaves STACKIT's default egress posture untouched."
+  description = "Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which allows egress to any destination."
 }
 
 variable "tags" {

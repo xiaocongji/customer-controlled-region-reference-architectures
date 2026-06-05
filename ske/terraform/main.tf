@@ -24,7 +24,7 @@ resource "terraform_data" "validate_bastion_image_id" {
   lifecycle {
     precondition {
       condition     = !var.create_bastion || var.bastion_image_id != null
-      error_message = "bastion_image_id must be set when create_bastion is true. The module cannot auto-resolve the image UUID when the project is created in the same apply. Find the UUID with: stackit image list --project-id <any-existing-project-id>"
+      error_message = "bastion_image_id must be set when create_bastion is true. Find the UUID with: stackit image list --project-id <any-existing-project-id>"
     }
   }
 }
