@@ -63,3 +63,4 @@ variable "observability_instance_id" {
   default     = null
   description = "ID of the STACKIT Observability instance to send cluster telemetry to. Required when observability_enabled is true."
 }
+

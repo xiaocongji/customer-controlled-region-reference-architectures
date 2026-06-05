@@ -33,14 +33,14 @@ output "egress_address_ranges" {
   description = "Outgoing network ranges (CIDR) of traffic originating from cluster workloads."
 }
 
-output "kubernetes_api_public_access" {
-  value       = var.kubernetes_api_public_access
-  description = "Whether the cluster's Kubernetes API is publicly accessible."
-}
-
 output "bastion_public_ip" {
   value       = one(module.bastion[*].bastion_public_ip)
   description = "Public IP of the bastion host (null when create_bastion is false)."
+}
+
+output "bastion_private_ip" {
+  value       = one(module.bastion[*].bastion_private_ip)
+  description = "Private IP of the bastion host on the cluster network (null when create_bastion is false)."
 }
 
 output "bastion_username" {
