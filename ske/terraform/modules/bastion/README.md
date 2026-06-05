@@ -15,12 +15,11 @@ is created in the same apply, so the image cannot be auto-resolved at plan time)
 List available Ubuntu images from any existing project in your organization:
 
 ```bash
-stackit image list --project-id <any-existing-project-id> | grep -i "22.04"
+stackit image list --project-id <any-existing-project-id> | grep -E "Ubuntu 22\.04 +"
 ```
 
 The `Ubuntu 22.04` (x86\_64) row shows the UUID to use. Example for eu01:
 `3ad2867e-695b-4ee6-9502-b563013413d4`
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -59,14 +58,14 @@ No modules.
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_bastion_egress_cidrs"></a> [bastion\_egress\_cidrs](#input\_bastion\_egress\_cidrs) | Destination CIDRs the bastion is allowed to reach (egress). One egress rule is created per CIDR. Defaults to empty, which leaves STACKIT's default egress posture untouched. | `list(string)` | `[]` | no |
 | <a name="input_bastion_icmp_source_cidrs"></a> [bastion\_icmp\_source\_cidrs](#input\_bastion\_icmp\_source\_cidrs) | Source CIDRs allowed to send ICMP echo (ping) to the bastion. One ingress rule is created per CIDR. Leave empty to omit ICMP entirely. | `list(string)` | `[]` | no |
-| <a name="input_bastion_image_id"></a> [bastion\_image\_id](#input\_bastion\_image\_id) | STACKIT image UUID override for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image via stackit\_image\_v2. | `string` | `null` | no |
+| <a name="input_bastion_image_id"></a> [bastion\_image\_id](#input\_bastion\_image\_id) | STACKIT image UUID for the bastion VM. When null (default), the module auto-resolves the latest Ubuntu 22.04 LTS image. | `string` | `null` | no |
 | <a name="input_bastion_ssh_public_key"></a> [bastion\_ssh\_public\_key](#input\_bastion\_ssh\_public\_key) | SSH public key installed on the bastion via a stackit\_key\_pair resource. When null, no key pair is created and access relies on user\_data alone. | `string` | `null` | no |
 | <a name="input_bastion_ssh_source_cidrs"></a> [bastion\_ssh\_source\_cidrs](#input\_bastion\_ssh\_source\_cidrs) | Source CIDRs allowed to SSH to the bastion (port 22). One ingress rule is created per CIDR. Must be non-empty. | `list(string)` | n/a | yes |
 | <a name="input_boot_volume_size"></a> [boot\_volume\_size](#input\_boot\_volume\_size) | Boot volume size in GiB for the bastion host. | `number` | `20` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Cluster name. Used as a prefix for bastion resource names (e.g. cluster\_name + '-bastion', cluster\_name + '-bastion-sg'). | `string` | n/a | yes |
 | <a name="input_common_labels"></a> [common\_labels](#input\_common\_labels) | Map of resource labels to apply to all resources that support labelling. | `map(string)` | `{}` | no |
-| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | STACKIT VM flavor for the bastion host. g2i.1 (1 vCPU, 4 GB) is the current equivalent of the deprecated g1.2 — use g2i.2 or larger for ops-heavy Schwarz-style deployments. | `string` | `"g2i.1"` | no |
-| <a name="input_network_id"></a> [network\_id](#input\_network\_id) | Project-scoped network ID for the bastion's NIC (the 'network\_id' output of the network module). | `string` | n/a | yes |
+| <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | STACKIT VM flavor for the bastion host. | `string` | `"g2i.1"` | no |
+| <a name="input_network_id"></a> [network\_id](#input\_network\_id) | Project-scoped network ID for the bastion's NIC. | `string` | n/a | yes |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | STACKIT project ID where the bastion is created. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Labels merged into the module-default labels and applied to every taggable bastion resource. STACKIT label keys do not allow ':' — use a separator like '\_' (e.g. solace\_env). | `map(string)` | `{}` | no |
 | <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Cloud-init user data passed to the bastion VM. The calling module is responsible for constructing the content. | `string` | `null` | no |
