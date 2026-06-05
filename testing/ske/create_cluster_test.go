@@ -130,8 +130,9 @@ func TestTerraformSkeClusterComplete(t *testing.T) {
 			"cluster_cidr":                       "10.10.0.0/24",
 			"worker_node_pool_min_size":          1,
 			"create_bastion":                     true,
+			"bastion_image_id":                   "3ad2867e-695b-4ee6-9502-b563013413d4",
 			"bastion_ssh_public_key":             bastionPublicKey,
-			"bastion_ssh_source_cidr":            localCidr[0],
+			"bastion_ssh_source_cidrs":           localCidr,
 			"kubernetes_api_public_access":       true,
 			"kubernetes_api_authorized_networks": localCidr,
 	}
