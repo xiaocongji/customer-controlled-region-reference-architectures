@@ -134,7 +134,7 @@ resource "aws_eks_addon" "vpc-cni" {
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "PRESERVE"
 
-  configuration_values = jsonencode({
+  configuration_values = var.vpc_cni_configuration_values != null ? var.vpc_cni_configuration_values : jsonencode({
     env = {
       WARM_IP_TARGET  = "1"
       WARM_ENI_TARGET = "0"
