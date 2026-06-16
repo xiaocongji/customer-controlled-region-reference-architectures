@@ -1,0 +1,60 @@
+name: Sync to Public Repo
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      target_repo:
+        description: "Target repo in Org/Repo format"
+        required: true
+      ssh_private_key:
+        description: "SSH private key for the target repo"
+        required: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_REPO: ${{ inputs.target_repo || 'SolaceLabs/customer-controlled-region-reference-architectures' }}
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v4
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ inputs.ssh_private_key || secrets.SOLACELABS_CCRRA_DEPLOY_KEY }}
+
+      - name: Clone target repo
+        run: |
+          git clone git@github.com:${{ env.TARGET_REPO }}.git /tmp/public-repo
+
+      - name: Sync files to target repo
+        run: |
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='.github/workflows/ske-integration-test.yaml' \
+            --exclude='.github/workflows/sync-to-public.yaml' \
+            ./ /tmp/public-repo/
+
+      - name: Commit and push changes
+        run: |
+          cd /tmp/public-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Release: ${{ github.ref_name }}"
+            git push origin main
+          fi
+
+      - name: Push tag to target repo
+        if: github.ref_type == 'tag'
+        run: |
+          cd /tmp/public-repo
+          git tag "${{ github.ref_name }}"
+          git push origin "${{ github.ref_name }}"
