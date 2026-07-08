@@ -1,0 +1,68 @@
+name: GKE Integration Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - "gke/**"
+      - "testing/gke/**"
+      - "testing/common/**"
+      - "testing/charts/**"
+      - "testing/prerequisites/**"
+
+permissions:
+  id-token: write # required for the Vault JWT/OIDC login below
+  contents: read
+
+jobs:
+  test-gke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      VAULT_ADDR: "https://vault.maas-vault-prod.solace.cloud:8200"
+      TF_VAR_project: "stellar-arcadia-205014"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache-dependency-path: testing/gke/go.sum
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Import GCP credentials from Vault
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: "${{ env.VAULT_ADDR }}"
+          role: semi-automated-datacenter-cluster-ccrra-role
+          method: jwt
+          path: jwt-github
+          jwtGithubAudience: https://github.com/SolaceDev
+          secrets: |
+            secret/data/development/gcp GCP_SERVICE_ACCOUNT | GCP_SERVICE_ACCOUNT
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud + GKE auth plugin
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: gke-gcloud-auth-plugin
+
+      - name: Download Go modules
+        working-directory: ./testing/gke
+        run: go mod download
+
+      - name: Run GKE integration tests
+        working-directory: ./testing/gke
+        run: go test -v -timeout 90m -parallel 8 -run TestTerraformGkeClusterComplete
