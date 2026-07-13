@@ -111,7 +111,7 @@ locals {
     maximum                 = 3
     minimum                 = 1
     max_surge               = 3
-    max_unavailable         = 1
+    max_unavailable         = 3
   }
 
   monitoring_labels_and_taints = {
