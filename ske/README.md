@@ -154,7 +154,9 @@ To use this Terraform module, the following is required:
 Create the storage classes — one for the broker's `spool` volume (`solace-broker-spool`, wraps `storage_premium_perf6`) and one for the `data` volume (`solace-default`, wraps `storage_premium_perf2`):
 
 ```bash
-kubectl apply -f kubernetes/storage-class-spool.yaml
+kubectl apply -f kubernetes/storage-class-spool-perf4.yaml
+kubectl apply -f kubernetes/storage-class-spool-perf6.yaml
+kubectl apply -f kubernetes/storage-class-spool-perf8.yaml
 kubectl apply -f kubernetes/storage-class-data.yaml
 ```
 

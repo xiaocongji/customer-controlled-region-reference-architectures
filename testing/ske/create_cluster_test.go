@@ -63,10 +63,16 @@ func applyStorageClasses(t *testing.T, kubeconfigPath string) {
 	options := k8s.NewKubectlOptions("", kubeconfigPath, "")
 
 	storageClassDataPath, _ := filepath.Abs("../../ske/kubernetes/storage-class-data.yaml")
-	storageClassSpoolPath, _ := filepath.Abs("../../ske/kubernetes/storage-class-spool.yaml")
+	storageClassSpoolPathPerf4, _ := filepath.Abs("../../ske/kubernetes/storage-class-spool-perf4.yaml")
+	storageClassSpoolPathPerf6, _ := filepath.Abs("../../ske/kubernetes/storage-class-spool-perf6.yaml")
+	storageClassSpoolPathPerf8, _ := filepath.Abs("../../ske/kubernetes/storage-class-spool-perf8.yaml")
+
 
 	k8s.KubectlApply(t, options, storageClassDataPath)
-	k8s.KubectlApply(t, options, storageClassSpoolPath)
+	k8s.KubectlApply(t, options, storageClassSpoolPathPerf4)
+	k8s.KubectlApply(t, options, storageClassSpoolPathPerf6)
+	k8s.KubectlApply(t, options, storageClassSpoolPathPerf8)
+
 }
 
 func formatVars(vars map[string]any) string {
