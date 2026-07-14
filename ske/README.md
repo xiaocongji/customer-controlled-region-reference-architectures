@@ -151,7 +151,7 @@ To use this Terraform module, the following is required:
 
 ### Deploying Storage Classes <a name="ske-deploy-storage"></a>
 
-Create the storage classes — one for the broker's `spool` volume (`solace-broker-spool`, wraps `storage_premium_perf6`) and one for the `data` volume (`solace-default`, wraps `storage_premium_perf2`):
+Create the storage classes — for the broker's `spool` volume(`solace-broker-spool-perf4, solace-broker-spool-perf6, solace-broker-spool-perf8`) and one for the `data` volume (`storage-class-data`):
 
 ```bash
 kubectl apply -f kubernetes/storage-class-spool-perf4.yaml
