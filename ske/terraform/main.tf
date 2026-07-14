@@ -109,11 +109,9 @@ locals {
     volume_type             = var.node_pool_volume_type
     allow_system_components = true
     maximum                 = 3
-    # Floor of 2 keeps system components (CoreDNS etc.) in at least two zones,
-    # matching the AKS/EKS/GKE reference architectures.
-    minimum         = 2
-    max_surge       = 3
-    max_unavailable = 3
+    minimum                 = 2
+    max_surge               = 3
+    max_unavailable         = 3
   }
 
   monitoring_labels_and_taints = {
