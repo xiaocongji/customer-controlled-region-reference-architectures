@@ -1,7 +1,14 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: solace-broker-spool
+  name: solace-broker-spool-perf6
+  labels:
+    diskType: spool
+  annotations:
+    serviceClasses: |
+      - prod5k
+      - prod10k
+      - prod50k
 provisioner: cinder.csi.openstack.org
 parameters:
   type: storage_premium_perf6
