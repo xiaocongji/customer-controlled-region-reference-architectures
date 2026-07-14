@@ -48,13 +48,13 @@ func getOrCreateSuffix(t *testing.T) string {
 }
 
 func testCluster(t *testing.T, kubeconfigPath string) {
-	common.TestHighAvailableServiceClass(t, kubeconfigPath, "prod1k", "solace-default", 1)
-	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod1k", "solace-default", 2)
+	common.TestHighAvailableServiceClass(t, kubeconfigPath, "prod1k", "solace-broker-spool-perf4", 1)
+	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod1k", "solace-broker-spool-perf4", 2)
 
-	common.TestHighAvailableServiceClass(t, kubeconfigPath, "prod10k", "solace-default", 1)
-	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod10k", "solace-default", 2)
+	common.TestHighAvailableServiceClass(t, kubeconfigPath, "prod10k", "solace-broker-spool-perf6", 1)
+	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod10k", "solace-broker-spool-perf6", 2)
 
-	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod100k", "solace-default", 1)
+	common.TestStandaloneServiceClass(t, kubeconfigPath, "prod100k", "solace-broker-spool-perf8", 1)
 
 	common.PrintTestComplete(t)
 }
