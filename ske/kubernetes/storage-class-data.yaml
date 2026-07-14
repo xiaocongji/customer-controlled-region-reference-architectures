@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: storage-class-data
+  name: solace-broker-data-perf2
   labels:
     diskType: data
 provisioner: cinder.csi.openstack.org
