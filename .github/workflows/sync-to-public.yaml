@@ -8,10 +8,10 @@ on:
     inputs:
       target_repo:
         description: "Target repo in Org/Repo format"
-        required: true
+        required: false
       ssh_private_key:
         description: "SSH private key for the target repo"
-        required: true
+        required: false
 
 jobs:
   sync:
