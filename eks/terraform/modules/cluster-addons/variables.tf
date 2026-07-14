@@ -54,8 +54,8 @@ variable "addon_version_pod_identity" {
   description = "The version of the pod identity add-on to install."
 }
 
-variable "vpc_cni_configuration_values" {
-  type        = string
-  default     = null
-  description = "JSON-encoded configuration values for the vpc cni add-on, e.g. jsonencode({ enableNetworkPolicy = \"true\", env = { WARM_IP_TARGET = \"1\" } }). When unset, the module's default warm pool settings are used."
+variable "enable_network_policy" {
+  type        = bool
+  default     = false
+  description = "Whether to enable VPC CNI native NetworkPolicy support (enableNetworkPolicy=true) on the vpc-cni add-on."
 }
