@@ -63,6 +63,11 @@ module "cluster" {
   kubernetes_dns_service_ip = var.kubernetes_dns_service_ip
   kubernetes_pod_cidr       = var.kubernetes_pod_cidr
 
+  network_plugin      = var.network_plugin
+  network_plugin_mode = var.network_plugin_mode
+  network_data_plane  = var.network_data_plane
+  network_policy      = var.network_policy
+
   outbound_ip_count        = var.outbound_ip_count
   outbound_ports_allocated = var.outbound_ports_allocated
 

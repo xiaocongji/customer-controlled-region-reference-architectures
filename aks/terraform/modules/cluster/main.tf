@@ -79,10 +79,13 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
   network_profile {
     #checkov:skip=CKV2_AZURE_29:Solace recommends the use of the 'kubenet' network plugin, but Azure CNI can be used if desired
-    network_plugin = "kubenet"
-    service_cidr   = var.kubernetes_service_cidr
-    dns_service_ip = var.kubernetes_dns_service_ip
-    pod_cidr       = var.kubernetes_pod_cidr
+    network_plugin      = var.network_plugin
+    network_plugin_mode = var.network_plugin_mode
+    network_data_plane  = var.network_data_plane
+    network_policy      = var.network_policy
+    service_cidr        = var.kubernetes_service_cidr
+    dns_service_ip      = var.kubernetes_dns_service_ip
+    pod_cidr            = var.kubernetes_pod_cidr
 
     load_balancer_sku = "standard"
     load_balancer_profile {
@@ -159,10 +162,5 @@ resource "azurerm_monitor_diagnostic_setting" "cluster" {
 
   enabled_log {
     category = "cluster-autoscaler"
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = false
   }
 }

@@ -42,6 +42,34 @@ variable "kubernetes_pod_cidr" {
   description = "The CIDR used to assign IPs to kubernetes services, internal to the cluster."
 }
 
+variable "network_plugin" {
+  type        = string
+  default     = "kubenet"
+  description = "AKS network plugin: 'kubenet' (default, current behavior) or 'azure' (required for Azure CNI Powered by Cilium)."
+  validation {
+    condition     = contains(["kubenet", "azure"], var.network_plugin)
+    error_message = "network_plugin must be 'kubenet' or 'azure'."
+  }
+}
+
+variable "network_plugin_mode" {
+  type        = string
+  default     = null
+  description = "Set to 'overlay' for Azure CNI overlay (required by the Cilium dataplane when not using a pod subnet). Null for kubenet."
+}
+
+variable "network_data_plane" {
+  type        = string
+  default     = null
+  description = "Network dataplane. Set to 'cilium' for Azure CNI Powered by Cilium. Null for kubenet."
+}
+
+variable "network_policy" {
+  type        = string
+  default     = null
+  description = "NetworkPolicy engine. Set to 'cilium' for Azure CNI Powered by Cilium. Null for kubenet (no engine; Azure NPM is rejected per ADR-002)."
+}
+
 variable "outbound_ip_count" {
   type        = number
   default     = 2
