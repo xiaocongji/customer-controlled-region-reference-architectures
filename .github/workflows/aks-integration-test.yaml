@@ -46,10 +46,10 @@ jobs:
           path: jwt-github
           jwtGithubAudience: https://github.com/SolaceDev
           secrets: |
-            secret/data/development/azure client_id | ARM_CLIENT_ID
-            secret/data/development/azure clientSecret | ARM_CLIENT_SECRET
-            secret/data/development/azure tenant_id | ARM_TENANT_ID
-            secret/data/development/azure subscription_id | ARM_SUBSCRIPTION_ID
+            secret/data/development/azure client_id | ARM_CLIENT_ID ;
+            secret/data/development/azure clientSecret | ARM_CLIENT_SECRET ;
+            secret/data/development/azure tenant_id | ARM_TENANT_ID ;
+            secret/data/development/azure subscription_id | ARM_SUBSCRIPTION_ID ;
             secret/data/development/azure subscription_id | TF_VAR_subscription
 
       - name: Download Go modules
