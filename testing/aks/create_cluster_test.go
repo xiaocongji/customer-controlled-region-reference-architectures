@@ -12,7 +12,7 @@ import (
 
 // Prerequisite, set the Azure subscription with: export TF_VAR_subscription=<subscription>
 
-const KubernetesVersion = "1.29"
+const KubernetesVersion = "1.33"
 
 func destroyAks(t *testing.T, options *terraform.Options) {
 	if _, err := terraform.DestroyE(t, options); err == nil {
