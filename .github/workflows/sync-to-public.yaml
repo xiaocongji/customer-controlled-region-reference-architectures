@@ -36,6 +36,7 @@ jobs:
           rsync -a --delete \
             --exclude='.git' \
             --exclude='.github/workflows/ske-integration-test.yaml' \
+            --exclude='.github/workflows/aks-integration-test.yaml' \
             --exclude='.github/workflows/gke-integration-test.yaml' \
             --exclude='.github/workflows/sync-to-public.yaml' \
             ./ /tmp/public-repo/
