@@ -29,7 +29,6 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   #checkov:skip=CKV_AZURE_171:Auto-upgrade disabled - Solace recommends that clusters be upgraded manually
   #checkov:skip=CKV_AZURE_117:Solace's recommended VM series use ephemeral OS disks so do not support BYOK
   #checkov:skip=CKV_AZURE_4:Solace is not opinionated on how container metrics are collected
-  #checkov:skip=CKV_AZURE_7:Network Policy setting not supported when network plugin is 'kubenet'
   #checkov:skip=CKV_AZURE_116:Solace is not opinionated on the use of Azure Policy for Kubernetes
 
   name                = var.cluster_name
@@ -78,11 +77,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   network_profile {
-    #checkov:skip=CKV2_AZURE_29:Solace recommends the use of the 'kubenet' network plugin, but Azure CNI can be used if desired
-    network_plugin      = var.network_plugin
-    network_plugin_mode = var.network_plugin_mode
-    network_data_plane  = var.network_data_plane
-    network_policy      = var.network_policy
+    network_plugin      = "azure"
+    network_plugin_mode = "overlay"
+    network_data_plane  = "cilium"
+    network_policy      = "cilium"
     service_cidr        = var.kubernetes_service_cidr
     dns_service_ip      = var.kubernetes_dns_service_ip
     pod_cidr            = var.kubernetes_pod_cidr
