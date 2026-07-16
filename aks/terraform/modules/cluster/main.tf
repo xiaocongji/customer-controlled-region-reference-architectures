@@ -83,7 +83,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     network_policy      = "cilium"
     service_cidr        = var.kubernetes_service_cidr
     dns_service_ip      = var.kubernetes_dns_service_ip
-    pod_cidr            = var.kubernetes_pod_cidr
+
+    # Azure CNI Overlay reserves one fixed /24 per node; the pod CIDR must satisfy:
+    #   2^(24 - prefix) >= sum of all node pool autoscaler max-counts
+    pod_cidr = var.kubernetes_pod_cidr
 
     load_balancer_sku = "standard"
     load_balancer_profile {
